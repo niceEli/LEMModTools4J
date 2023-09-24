@@ -65,13 +65,7 @@ public class Install {
     }
 
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Usage: Install <modArchivePath>");
-            System.exit(1);
-        }
-
-        String modArchivePath = args[0];
-        extractMod(modArchivePath);
+        extractMod(args[0]);
         loadModConfig();
 
         // Check if "index.jar" exists and run it using ProcessBuilder
