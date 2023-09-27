@@ -13,9 +13,9 @@ public class oldInstall {
 
     // Set datapack location
     // Base
-    private static final String baseDPFolder = "./world/datapacks/lem.base/data/lem.base/";
+    private static final String baseDPFolder = "/world/datapacks/lem.base/data/lem.base/";
     // Battle
-    private static final String battleDPFolder = "./world/datapacks/lem.battle/data/lem.battle/";
+    private static final String battleDPFolder = "/world/datapacks/lem.battle/data/lem.battle/";
 
     public static void extractMod(String modArchivePath) {
         System.out.println("Extracting mod archive from: " + modArchivePath);
@@ -48,7 +48,7 @@ public class oldInstall {
         try {
             // Load mod config
             JSONParser parser = new JSONParser();
-            FileReader modConfigFile = new FileReader("./lem.modtools-temp/config.json");
+            FileReader modConfigFile = new FileReader("/lem.modtools-temp/config.json");
             JSONObject modConfig = (JSONObject) parser.parse(modConfigFile);
             String modNameSpaceless = ((String) modConfig.get("name")).replace(" ", "-");
             String modID = (String) modConfig.get("id");

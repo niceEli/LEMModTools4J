@@ -91,31 +91,42 @@ public class Compile {
         copyDirectory(srcDir, destDir);
 
         // Rename lebmod.json to config.json
-        File configFile = new File(directory + "./lebmod.json");
-        File renamedFile = new File(directory + "./config.json");
+        File configFile = new File(directory + "/lebmod.json");
+        File renamedFile = new File(directory + "/config.json");
         configFile.renameTo(renamedFile);
 
         // Remove unused data
         if (modconfig.getBoolean("hassmall")) {
             System.out.println("Cleaning up unused files for Small map type");
-            removeUnused(directory + "./world/small");
+            removeUnused(directory + "/world/small");
         }
         if (modconfig.getBoolean("haslarge")) {
             System.out.println("Cleaning up unused files for Large map type");
-            removeUnused(directory + "./world/large");
+            removeUnused(directory + "/world/large");
         }
         if (modconfig.getBoolean("haslargeplus")) {
             System.out.println("Cleaning up unused files for Large+ map type");
-            removeUnused(directory + "./world/largeplus");
+            removeUnused(directory + "/world/largeplus");
         }
         if (modconfig.getBoolean("hasremastered")) {
             System.out.println("Cleaning up unused files for Remastered map type");
-            removeUnused(directory + "./world/remastered");
+            removeUnused(directory + "/world/remastered");
         }
 
         // Create a TGZ archive
-        String outputFileName = "../output/" + modNameSpaceless + ".lemmod";
-        try (FileOutputStream fos = new FileOutputStream(outputFileName);
+        String outputFileName = "./output/" + modNameSpaceless + ".lemmod";
+
+        File outputFile = new File(outputFileName);
+
+        File outputDir = new File("./output");
+        if (!outputDir.exists()) {
+            if (!outputDir.mkdirs()) {
+                System.err.println("Failed to create the output directory.");
+                System.exit(1); // Exit the program with an error code
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(outputFile);
              BufferedOutputStream bos = new BufferedOutputStream(fos);
              GzipCompressorOutputStream gzos = new GzipCompressorOutputStream(bos);
              TarArchiveOutputStream tos = new TarArchiveOutputStream(gzos)) {
@@ -143,15 +154,26 @@ public class Compile {
         }
 
         // Change directory back to the starting point
-        System.setProperty("user.dir", "../");
+        System.setProperty("user.dir", "./");
 
         // Remove the temporary mod folder
-        File tempModFolder = new File(directory);
+        File tempModFolder = new File("./lem.modtools-temp");
         if (tempModFolder.exists()) {
             if (!tempModFolder.delete()) {
-                System.out.println("Failed to delete temporary mod folder");
+                System.out.println("Failed to delete temporary mod folder (try 1)");
+                if (tempModFolder.exists()) {
+                    if (!tempModFolder.delete()) {
+                        System.out.println("Failed to delete temporary mod folder (try 2)");
+                        if (tempModFolder.exists()) {
+                            if (!tempModFolder.delete()) {
+                                System.out.println("Failed to delete temporary mod folder (try 3)");
+                            }
+                        }
+                    }
+                }
             }
         }
+
 
         System.out.println("All files compiled successfully!");
     }

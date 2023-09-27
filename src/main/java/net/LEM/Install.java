@@ -17,13 +17,21 @@ public class Install {
 
     // Set datapack location
     // Base
-    private static final String baseDPFolder = "./world/datapacks/lem.base/data/lem.base/";
+    private static final String baseDPFolder = "/world/datapacks/lem.base/data/lem.base/";
     // Battle
-    private static final String battleDPFolder = "./world/datapacks/lem.battle/data/lem.battle/";
+    private static final String battleDPFolder = "/world/datapacks/lem.battle/data/lem.battle/";
 
     public static void extractMod(String modArchivePath) {
         System.out.println("Extracting mod archive from: " + modArchivePath);
-        try (FileInputStream fis = new FileInputStream(modArchivePath);
+        File modArchive = new File(modArchivePath);
+        File tempFolder = new File("./lem.modtools-temp");
+
+        if (!tempFolder.exists() && !tempFolder.mkdirs()) {
+            System.err.println("Failed to create the Temp directory.");
+            System.exit(1);
+        }
+
+        try (FileInputStream fis = new FileInputStream(modArchive);
              BufferedInputStream bis = new BufferedInputStream(fis);
              GzipCompressorInputStream gzis = new GzipCompressorInputStream(bis);
              TarArchiveInputStream taris = new TarArchiveInputStream(gzis)) {
@@ -52,9 +60,14 @@ public class Install {
 
     public static void loadModConfig() {
         try {
-            // Load mod config
+            File configFile = new File("./lem.modtools-temp/config.json");
+            if (!configFile.exists()) {
+                System.err.println("Config file not found.");
+                System.exit(1);
+            }
+
             JSONParser parser = new JSONParser();
-            FileReader modConfigFile = new FileReader("./lem.modtools-temp/config.json");
+            FileReader modConfigFile = new FileReader(configFile);
             JSONObject modConfig = (JSONObject) parser.parse(modConfigFile);
             String modNameSpaceless = ((String) modConfig.get("name")).replace(" ", "-");
             String modID = (String) modConfig.get("id");

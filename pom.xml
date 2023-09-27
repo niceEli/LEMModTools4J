@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.niceEli</groupId>
+    <groupId>net.LEM</groupId>
     <artifactId>ModTools</artifactId>
     <version>latest</version>
 
@@ -52,7 +52,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>net.niceEli.Main</mainClass>
+                            <mainClass>net.LEM.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
